@@ -30,10 +30,10 @@ class Order extends React.Component {
         <li key={ key }>
           <TransitionGroup component="span" className="count">
             <CSSTransition classNames="count" key={count} timeout={{enter: 500, exit: 500}}>
-              <span>{ count }</span>
+              <span>{ count } lbs</span>
             </CSSTransition>
           </TransitionGroup>
-          lbs { fish.name }
+          { fish.name }
           <span className="price">{ formatPrice(count * fish.price) }</span>
           { removeButton }
         </li>

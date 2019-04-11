@@ -19,23 +19,6 @@ class Inventory extends React.Component {
     this.state = initialState;
   }
 
-  // renderSignup = () => {
-  //   return (
-  //     <nav className="signup">
-  //       <p>HOLA</p>
-  //     </nav>
-  //   );
-  // }
-
-  // renderLogin = () => {
-  //   return (
-  //     <nav className="login">
-  //       <p>Sign in to manage your store's inventory</p>
-  //       <button className="github"></button>
-  //     </nav>
-  //   );
-  // }
-
   authHandler = async authData => {
     // 1. Look up the current store in the firebase database
     const store = await base.fetch(this.props.storeId, { context: this });
@@ -47,40 +30,48 @@ class Inventory extends React.Component {
         data: authData.user.uid
       })
     }
+    // 3. Set the state of the inventory component to reflect the current user
+    this.setState({
+      uid: authData.user.uid,
+      owner: store.owner || authData.user.uid
+    });
   };
 
-  signUp = (email, password) => {
-    firebaseApp.auth().createUserWithEmailAndPassword(email, password)
-    .then( this.authHandler )
+  signUp = async (email, password) => {
+
+    // 1. Look up the current store in the firebase database
+    const store = await base.fetch(this.props.storeId, { context: this });
+    console.log(store);
+    // 2. Claim it if there is no owner
+
+    //firebaseApp.auth().createUserWithEmailAndPassword(email, password)
+    //.then( this.authHandler )
   };
 
   render() {
     // check if we are not logged in at all
-    if (!this.state.uid) {
-      return (
-        <div>
-          <LoginForm />
-          <SignupForm signUp={ this.signUp } />
-        </div>
-      );
-    }
+    // if (!this.state.uid) {
+    //   return (
+    //     <div>
+    //       <LoginForm />
+    //       <SignupForm signUp={ this.signUp } />
+    //     </div>
+    //   );
+    // }
 
-    // check if we are the owner of the current store
-    if (this.state.uid !== this.state.owner) {
-      return (
-        <div>
-          <p>Sorry you aren't the owner of this store!</p>
-        </div>
-      );
-    }
+    // // check if we are the owner of the current store
+    // if (this.state.uid !== this.state.owner) {
+    //   return (
+    //     <div>
+    //       <p>Sorry you aren't the owner of this store!</p>
+    //     </div>
+    //   );
+    // }
 
 
     return (
       <div>
         <h2>Inventory</h2>
-        { <LoginForm /> }
-        <p>or</p>
-        { <SignupForm signUp={ this.signUp } /> }
         {Object.keys(this.props.fishes)
           .map(key => <EditFishForm 
             key={ key }

@@ -19,7 +19,14 @@ class App extends React.Component {
   componentDidMount() {
     const { params } = this.props.match;
     
-    // this runs right before the <App> is rendered
+    // Create the store database if it does not exists
+    base.fetch(params.storeId, { context: this }).then(store => {
+      if (!store.status) {
+        base.post(`${ params.storeId }`, {data: {status: 'created'}});
+      }
+    });
+
+    // Sync state <> database (firebase)
     this.ref = base.syncState(`${ params.storeId }/fishes`, {
       context: this,
       state: "fishes"
